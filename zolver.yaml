@@ -1,0 +1,7 @@
+gh:
+  default: true
+  to: https://github.com
+t:
+  to: http://technosophos.com
+go:
+  to: google/ifeellucky
