@@ -11,5 +11,5 @@ my:
     news: http://techmeme.com
 # rewrite a URL based on the contents of an incomming URL
 q:
-  tpl: https://ddg.gg?q={{.Path}}
+  tpl: https://ddg.gg?q={{.Path | trimall "/"}}
 

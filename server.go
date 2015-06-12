@@ -18,11 +18,17 @@ import (
 func main() {
 	reg, router, cxt := cookoo.Cookoo()
 
+	cxt.Put("server.Address", ":8080")
+
 	reg.Route("@startup", "Start app").
-		Does(ParseYaml, "conf")
+		Does(ParseYaml, "conf").
+		Does(BuildTemplates, "tpl").
+		Using("config").From("cxt:conf")
 
 	reg.Route("GET /**", "Handle inbound requests").
-		Does(Resolve, "res").Using("config").From("cxt:conf")
+		Does(Resolve, "res").
+		Using("config").From("cxt:conf").
+		Using("tpl").From("cxt:tpl")
 
 	router.HandleRequest("@startup", cxt, false)
 	web.Serve(reg, router, cxt)
@@ -45,8 +51,37 @@ func ParseYaml(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrup
 		return zconf, fmt.Errorf("Invalid YAML: %s\n", err)
 	}
 
-	fmt.Printf("Zolver: %v\n", zconf)
+	//fmt.Printf("Zolver: %v\n", zconf)
+	domains := make([]string, len(zconf))
+	i := 0
+	for d, _ := range zconf {
+		domains[i] = d
+		i++
+	}
+	c.Logf("info", "Your /etc/hosts file should have a line like this:")
+	c.Logf("info", "\t127.0.0.1\tlocahost %s", strings.Join(domains, " "))
 	return zconf, nil
+}
+
+func BuildTemplates(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt) {
+	domains := p.Get("config", nil).(ZolverYaml)
+
+	// We could probably refactor this to use one master template with
+	// several sub-templates.
+	templates := make(map[string]*template.Template)
+	extras := sprig.TxtFuncMap()
+
+	for dom, route := range domains {
+		if len(route.Tpl) > 0 {
+			c.Logf("info", "Compiling template: '%s'", route.Tpl)
+			t, err := template.New(dom).Funcs(extras).Parse(route.Tpl)
+			if err != nil {
+				return err, templates
+			}
+			templates[route.Tpl] = t
+		}
+	}
+	return templates, nil
 }
 
 func Resolve(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt) {
@@ -54,6 +89,7 @@ func Resolve(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt)
 	req := c.Get("http.Request", nil).(*http.Request)
 	res := c.Get("http.ResponseWriter", nil).(http.ResponseWriter)
 	cfg := p.Get("config", nil).(ZolverYaml)
+	tpls := p.Get("tpl", nil).(map[string]*template.Template)
 
 	host := strings.SplitN(req.Host, ":", 2)
 
@@ -64,7 +100,7 @@ func Resolve(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt)
 		return nil, nil
 	}
 
-	newurl, err := destination(req, &route)
+	newurl, err := destination(req, &route, tpls)
 	if err != nil {
 		http.Error(res, err.Error(), 500)
 		return nil, nil
@@ -78,7 +114,7 @@ func Resolve(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt)
 }
 
 // destination builds the redirect URL.
-func destination(req *http.Request, route *ZolverRoute) (string, error) {
+func destination(req *http.Request, route *ZolverRoute, tpls map[string]*template.Template) (string, error) {
 	oldurl := req.URL
 
 	if val, ok := route.Short[oldurl.Path[1:]]; ok {
@@ -87,7 +123,8 @@ func destination(req *http.Request, route *ZolverRoute) (string, error) {
 
 	if len(route.Tpl) > 0 {
 		var err error
-		newurl, err := doTemplate(route.Tpl, oldurl)
+		tpl := tpls[route.Tpl]
+		newurl, err := doTemplate(tpl, oldurl)
 		if err != nil {
 			return oldurl.String(), err
 		}
@@ -107,13 +144,9 @@ func destination(req *http.Request, route *ZolverRoute) (string, error) {
 	return newurl.String(), nil
 }
 
-func doTemplate(tpl string, oldurl *url.URL) (string, error) {
-	t, err := template.New("url").Parse(tpl)
-	if err != nil {
-		return tpl, err
-	}
+func doTemplate(t *template.Template, oldurl *url.URL) (string, error) {
 	var b bytes.Buffer
-	err = t.Execute(&b, oldurl)
+	err := t.Execute(&b, oldurl)
 
 	return b.String(), err
 }
