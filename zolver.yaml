@@ -1,7 +1,15 @@
+# Simple redirect
 gh:
-  default: true
   to: https://github.com
-t:
-  to: http://technosophos.com
-go:
-  to: google/ifeellucky
+# Shortened URLs
+my:
+  # Shorten or just search.
+  short:
+    # my/ts goes here
+    ts: http://technosophos.com
+    # my/news goes here
+    news: http://techmeme.com
+# rewrite a URL based on the contents of an incomming URL
+q:
+  tpl: https://ddg.gg?q={{.Path}}
+
