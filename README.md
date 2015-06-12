@@ -15,11 +15,50 @@ to...
 $ go install github.com/technosophos/zolver
 ```
 
+### Developers
+
+If you're a developer, you may prefer to check out the Git repo, and
+then use Glide to set up your environment.
+
+```
+$ cd zolver
+$ glide install
+```
+
 ## Using
 
 Right now, using Zolver takes three steps:
 
 ### 1. Write your Zolver.yaml file
+
+The main configuration file for Zolver is a simple YAML file.
+
+Generally, each entry starts with the name of the domain you will use,
+followed by an indented list of directives.
+
+Starting with the most simple example, say I want to have `gh` redirect
+me to `github.com`, so that I can type `gh/technosophos` and have it
+take me to `https://github.com/technosophos`. The YAML for this is:
+
+```
+gh:
+  to: https://github.com
+```
+
+The supported directives are:
+
+* `to`: Redirect to a URL. If you add a path (`gh/technosophos/zolver`),
+  the path will be moved to the new domain
+  (`github.com/technosophos/zolver`).
+* `short`: This provides a basic URL shortening map like you'd get with
+  Bit.ly. `short`'s map takes the local path on the left, and the remote
+  URL on the right.
+* `tpl`: This allows you to build up templates where values from the URL
+  you entered are put in very specific places in the result. It
+  supports all of Go's `text/template` package plus the additional
+  functions from https://github.com/Masterminds/sprig.
+
+Here's a complate example that declares three domains: gh, my, and q.
 
 ```
 # Simple redirect
@@ -50,3 +89,10 @@ sudo ./zolver
 ```
 
 You need to run Zolver as a root user so that you can take over port 80.
+
+NOTE: Because this is still very beta, I have it listening on port 8080,
+wich means you don't need to run as root, but URLs are `my:8080/foo`.
+
+## License
+
+This is licensed under an MIT-style license.
