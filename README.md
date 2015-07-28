@@ -1,5 +1,7 @@
 # Zolver: Your Personal URL Shortener
 
+Your personal productivity is important. Don't waste time typing URLs.
+
 Zolver is a simple tool for building local short links. You can use it
 to...
 
@@ -9,10 +11,15 @@ to...
 - Rewrite a short local URL into a more complex one (`ticket/1` goes to
   `http://mybugtracker.example.com/issues/?item=1&view=full`)
 
+Run it locally, use it in any browser. Or run it in the cloud and share
+between computers.
+
 ## Installing
 
+Assuming you have a valid Go environment:
+
 ```
-$ go install github.com/technosophos/zolver
+$ go get -u github.com/technosophos/zolver
 ```
 
 ### Developers
@@ -79,9 +86,14 @@ q:
 
 ## 2. Edit your hosts file with your simple domains:
 
+Get your DNS resolver to play nicely with your new service by adding
+an entry to your `/etc/hosts` file.
+
 ```
 127.0.0.1 localhost gh my q
 ```
+
+Don't worry, Zolver will tell you what the record should look like.
 
 ## 3. Start the server
 ```
@@ -89,9 +101,6 @@ sudo ./zolver
 ```
 
 You need to run Zolver as a root user so that you can take over port 80.
-
-NOTE: Because this is still very beta, I have it listening on port 8080,
-wich means you don't need to run as root, but URLs are `my:8080/foo`.
 
 ## License
 

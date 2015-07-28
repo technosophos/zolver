@@ -6,8 +6,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/Masterminds/cookoo"
 	"github.com/Masterminds/cookoo/web"
@@ -18,10 +20,17 @@ import (
 func main() {
 	reg, router, cxt := cookoo.Cookoo()
 
-	cxt.Put("server.Address", ":8080")
+	cxt.Put("server.Address", ":80")
+	//cxt.Put("server.Address", ":8080")
+
+	if len(os.Args) > 1 {
+		first := os.Args[1]
+		cxt.Put("file", first)
+	}
 
 	reg.Route("@startup", "Start app").
 		Does(ParseYaml, "conf").
+		Using("file").From("cxt:file").
 		Does(BuildTemplates, "tpl").
 		Using("config").From("cxt:conf")
 
@@ -31,6 +40,15 @@ func main() {
 		Using("tpl").From("cxt:tpl")
 
 	router.HandleRequest("@startup", cxt, false)
+
+	// Periodically re-read the file.
+	go func() {
+		t := time.NewTicker(5 * time.Minute)
+		for range t.C {
+			router.HandleRequest("@startup", cxt, false)
+		}
+	}()
+
 	web.Serve(reg, router, cxt)
 
 	// Listen
