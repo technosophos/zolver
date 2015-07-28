@@ -41,7 +41,7 @@ Starting with the most simple example, say I want to have `gh` redirect
 me to `github.com`, so that I can type `gh/technosophos` and have it
 take me to `https://github.com/technosophos`. The YAML for this is:
 
-```
+```yaml
 gh:
   to: https://github.com
 ```
@@ -107,7 +107,96 @@ Don't worry, Zolver will tell you what the record should look like.
 Now that Zolver is running, everything from Chrome, Firefox, and Safari
 to Curl and WGet will be able to use your custom URLs.
 
-### Developers
+## Advanced Usage
+
+Now that you are familiar with the basics, learn some of the cool stuff.
+
+### Using Redirects
+
+A redirect maps a domain, and moves the path for you.
+
+```yaml
+gh:
+  to: https://github.com
+```
+
+Now typing in `gh/Masterminds/sprig` will take you to
+`https://github.com/Masterminds/sprig`. There is no need to do any
+templating for this.
+
+### Using the Shortener
+
+The shortener allows you to pick one domain and provide a group of
+mnemonic mappings under it:
+
+```yaml
+my:
+  short:
+    ts: http://technosophos.com
+    news: http://techmeme.com
+```
+
+This maps `my/ts` to `http://technosophos.com` and `my/news` to
+`http://techmeme.com`.
+
+**This does not copy the path information from the source URL to the
+destination.**
+
+### Using Templates
+
+When you use the `tpl` directive, you gain access to the template
+engine. The template engine provides access to all of the pieces of the
+URL that was passed in.
+
+* `.Path`: The path portion of the URL passed in.
+* `.RawQuery`: The raw query string
+* `.Query`: The parsed query values
+* `.Fragment`: Anything after a `#` in the URL
+* `.Scheme`: The protocol scheme (usually HTTP).
+* `.User`: The user portion of the URL (if you included one)
+* `.Host`: The "host name", which is just the very first part of your
+  URL.
+* `.RequestURI`: `path?query` all together.
+* `.String`: The entire URL.
+
+```
+scheme://[userinfo@]host/path[?query][#fragment]
+```
+
+There is also a function called `.Part` which takes one argument: An
+integer (starting at 1) that indicates which part of the `.Path`.
+
+This will reverse the order of `add/sprig/Masterminds` and covert it to
+`https://github.com/Masterminds/sprig`:
+
+```yaml
+add:
+  tpl: https://github.com/{{.Part 2}}/{{.Part 1}}
+```
+
+Along with those variables, there are a number of template functions
+available to you, as well as some control structures. You may find
+documentation for all of these here:
+
+* Extended template functions from Sprig: https://github.com/Masterminds/sprig
+* The core template engine: http://golang.org/pkg/text/template/
+
+Here's an example that uses a number of template functions.
+
+```yaml
+add:
+  tpl: https://github.com/{{"deis/" | repeat 2}}{{.Path | trimall "/" | lower}}
+```
+
+If you give it the URL `add/ISSUES` it will convert it to
+`https://github.com/deis/deis/issues`.
+
+The first template, `{{ "deis/" | repeat 2" }}` evaluates to
+`deis/deis/`. And `{{ .Path | trimall "/" | lower }}` takes the path
+(`/ISSUES`), trims off the leading and trailing slashes, and then
+lowercases the rest.
+
+### Hacking on Zolver
 
 If you're a developer, you may prefer to check out the Git repo, and
 then use Glide to set up your environment.

@@ -94,7 +94,8 @@ func BuildTemplates(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Int
 			c.Logf("info", "Compiling template: '%s'", route.Tpl)
 			t, err := template.New(dom).Funcs(extras).Parse(route.Tpl)
 			if err != nil {
-				return err, templates
+				c.Logf("error", "Error compiling template: %s", err)
+				return templates, err
 			}
 			templates[route.Tpl] = t
 		}
@@ -133,7 +134,7 @@ func Resolve(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt)
 
 // destination builds the redirect URL.
 func destination(req *http.Request, route *ZolverRoute, tpls map[string]*template.Template) (string, error) {
-	oldurl := req.URL
+	oldurl := &URL{req.URL}
 
 	if val, ok := route.Short[oldurl.Path[1:]]; ok {
 		return val, nil
@@ -162,7 +163,19 @@ func destination(req *http.Request, route *ZolverRoute, tpls map[string]*templat
 	return newurl.String(), nil
 }
 
-func doTemplate(t *template.Template, oldurl *url.URL) (string, error) {
+type URL struct {
+	*url.URL
+}
+
+func (u *URL) Part(index int) string {
+	parts := strings.Split(u.Path, "/")
+	if len(parts) < index+1 {
+		return ""
+	}
+	return parts[index]
+}
+
+func doTemplate(t *template.Template, oldurl *URL) (string, error) {
 	var b bytes.Buffer
 	err := t.Execute(&b, oldurl)
 
