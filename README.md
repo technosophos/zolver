@@ -97,7 +97,7 @@ Don't worry, Zolver will tell you what the record should look like.
 
 ## 3. Start the server
 ```
-sudo ./zolver
+sudo $GOPATH/bin/zolver /path/to/zolver.yaml
 ```
 
 You need to run Zolver as a root user so that you can take over port 80.

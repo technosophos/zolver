@@ -1,0 +1,20 @@
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.technosophos.zolver</string>
+	<key>UserName</key>
+	<string>root</string>
+	<key>GroupName</key>
+	<string>wheel</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>AbandonProcessGroup</key>
+	<true/>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/local/bin/zolver</string>
+		<string>/etc/zolver.yaml</string>
+	</array>
+</dict>
+</plist>
