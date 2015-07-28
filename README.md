@@ -1,4 +1,4 @@
-# Zolver: Your Personal URL Shortener
+# Zolver: Get Personal with Your URLs
 
 Your personal productivity is important. Don't waste time typing URLs.
 
@@ -22,19 +22,13 @@ Assuming you have a valid Go environment:
 $ go get -u github.com/technosophos/zolver
 ```
 
-### Developers
-
-If you're a developer, you may prefer to check out the Git repo, and
-then use Glide to set up your environment.
-
-```
-$ cd zolver
-$ glide install
-```
-
 ## Using
 
 Right now, using Zolver takes three steps:
+
+1. Write a `zolver.yaml` file.
+2. Start the server.
+3. Modify your `/etc/hosts` file.
 
 ### 1. Write your Zolver.yaml file
 
@@ -67,7 +61,7 @@ The supported directives are:
 
 Here's a complate example that declares three domains: gh, my, and q.
 
-```
+```yaml
 # Simple redirect
 gh:
   to: https://github.com
@@ -84,7 +78,20 @@ q:
   tpl: https://ddg.gg?q={{.Path}}
 ```
 
-## 2. Edit your hosts file with your simple domains:
+## 2. Start the server
+
+Start the server as root, and tell it where your `zolver.yaml` is.
+
+```
+$ sudo $GOPATH/bin/zolver /path/to/zolver.yaml
+```
+
+You need to run Zolver as a root user so that you can take over port 80.
+
+Every five minutes, the server will reload its configuration file, so
+you can edit `zolver.yaml` and not have to reload the config.
+
+## 3. Edit your hosts file with your simple domains:
 
 Get your DNS resolver to play nicely with your new service by adding
 an entry to your `/etc/hosts` file.
@@ -95,12 +102,20 @@ an entry to your `/etc/hosts` file.
 
 Don't worry, Zolver will tell you what the record should look like.
 
-## 3. Start the server
-```
-sudo $GOPATH/bin/zolver /path/to/zolver.yaml
-```
+## Using Zolver
 
-You need to run Zolver as a root user so that you can take over port 80.
+Now that Zolver is running, everything from Chrome, Firefox, and Safari
+to Curl and WGet will be able to use your custom URLs.
+
+### Developers
+
+If you're a developer, you may prefer to check out the Git repo, and
+then use Glide to set up your environment.
+
+```
+$ cd zolver
+$ glide install
+```
 
 ## License
 
