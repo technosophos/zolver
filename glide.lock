@@ -1,0 +1,15 @@
+hash: 895f2833c737539fe7cd175a3474ac654fcbb66f25c6aac392d88b7e7a51301d
+updated: 2016-03-22T16:35:45.343442918-06:00
+imports:
+- name: github.com/aokoli/goutils
+  version: 9c37978a95bd5c709a15883b6242714ea6709e64
+- name: github.com/Masterminds/cookoo
+  version: 78aa11ce75e257c51be7ea945edb84cf19c4a6de
+  subpackages:
+  - web
+  - io
+- name: github.com/Masterminds/sprig
+  version: 0199893f008a87287bf2b4e3e390e66bb074c659
+- name: gopkg.in/yaml.v2
+  version: a83829b6f1293c91addabc89d0571c246397bbf4
+devImports: []

@@ -17,6 +17,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var version = "DEV"
+
 func main() {
 	reg, router, cxt := cookoo.Cookoo()
 
@@ -163,10 +165,12 @@ func destination(req *http.Request, route *ZolverRoute, tpls map[string]*templat
 	return newurl.String(), nil
 }
 
+// URL represents a URL
 type URL struct {
 	*url.URL
 }
 
+// Part takes a path index and returns the part.
 func (u *URL) Part(index int) string {
 	parts := strings.Split(u.Path, "/")
 	if len(parts) < index+1 {
@@ -182,8 +186,10 @@ func doTemplate(t *template.Template, oldurl *URL) (string, error) {
 	return b.String(), err
 }
 
+// ZolverYaml describes a map of Zolver routes.
 type ZolverYaml map[string]ZolverRoute
 
+// ZolverRoute is a route for redirecting.
 type ZolverRoute struct {
 	Default bool
 	To      string
