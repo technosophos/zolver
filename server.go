@@ -56,6 +56,7 @@ func main() {
 	// Listen
 }
 
+// ParseYaml parses the YAML config file.
 func ParseYaml(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt) {
 	var zconf ZolverYaml
 	zconf = make(map[string]ZolverRoute)
@@ -83,6 +84,7 @@ func ParseYaml(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrup
 	return zconf, nil
 }
 
+// BuildTemplate resolves a route into a template.
 func BuildTemplates(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt) {
 	domains := p.Get("config", nil).(ZolverYaml)
 
@@ -105,6 +107,7 @@ func BuildTemplates(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Int
 	return templates, nil
 }
 
+// Resolve resolves a URL to a redirect route.
 func Resolve(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt) {
 
 	req := c.Get("http.Request", nil).(*http.Request)
