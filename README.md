@@ -1,4 +1,6 @@
 # Zolver: Get Personal with Your URLs
+[![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
+
 
 Your personal productivity is important. Don't waste time typing URLs.
 
