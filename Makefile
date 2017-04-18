@@ -18,3 +18,7 @@ clean:
 .PHONY: bootstrap
 bootstrap:
 	glide install
+
+.PHONY: test
+test:
+	go test .
