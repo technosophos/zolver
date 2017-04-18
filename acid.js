@@ -13,7 +13,7 @@ j.env = {
 };
 
 j.tasks = [
-  "go get github.com/Masterminds/glide"
+  "go get github.com/Masterminds/glide",
   "make bootstrap",
   "make test"
 ];
