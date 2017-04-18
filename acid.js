@@ -2,7 +2,7 @@
 
 // We need to simulate a Go environment
 gopath = "/go";
-localPath = gopath + "/src/github.com/" + pushRecord.repository.name;
+localPath = gopath + "/src/github.com/" + pushRecord.repository.full_name;
 
 // Define a single build step:
 j = new Job("test-zolver");
