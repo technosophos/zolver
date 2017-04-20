@@ -204,6 +204,7 @@ If you're a developer, you may prefer to check out the Git repo, and
 then use Glide to set up your environment.
 
 ```
+$ git clone https://github.com/technosophos/zolver.git
 $ cd zolver
 $ glide install
 ```
