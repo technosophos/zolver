@@ -1,4 +1,4 @@
-package: main
+package: github.com/technosophos/zolver
 import:
   - package: github.com/Masterminds/cookoo
   - package: gopkg.in/yaml.v2
