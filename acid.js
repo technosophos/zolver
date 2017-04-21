@@ -1,4 +1,5 @@
 // Acid CI/CD
+console.log("===> Building " + push.repository.full_url + " " + pushRecord.head_commit.id);
 
 // We need to simulate a Go environment
 gopath = "/go";
