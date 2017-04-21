@@ -1,6 +1,8 @@
 # Zolver: Get Personal with Your URLs
 [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
+[![Acid](https://img.shields.io/badge/Acid-Pass-brightgreen.svg)](http://13.93.153.49:7744/log/technosophos/zolver)
+
 
 Your personal productivity is important. Don't waste time typing URLs.
 
