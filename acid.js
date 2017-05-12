@@ -19,4 +19,4 @@ j.tasks = [
   "make test"
 ];
 
-j.run(pushRecord).waitUntilDone()
+j.run(pushRecord)
