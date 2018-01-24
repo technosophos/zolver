@@ -1,8 +1,12 @@
-hash: 895f2833c737539fe7cd175a3474ac654fcbb66f25c6aac392d88b7e7a51301d
-updated: 2017-04-20T16:24:36.81574301-06:00
+hash: ac81359daca254776f38d4287eb029323d8b7aadfac5def4d5ca77ccb9f976e8
+updated: 2018-01-23T16:59:00.378057-07:00
 imports:
 - name: github.com/aokoli/goutils
   version: 9c37978a95bd5c709a15883b6242714ea6709e64
+- name: github.com/huandu/xstrings
+  version: 3959339b333561bf62a38b424fd41517c2c90f40
+- name: github.com/imdario/mergo
+  version: 7fe0c75c13abdee74b09fcacef5ea1c6bba6a874
 - name: github.com/Masterminds/cookoo
   version: 78aa11ce75e257c51be7ea945edb84cf19c4a6de
   subpackages:
@@ -11,11 +15,11 @@ imports:
 - name: github.com/Masterminds/semver
   version: 59c29afe1a994eacb71c833025ca7acf874bb1da
 - name: github.com/Masterminds/sprig
-  version: 23597e5f6ad0e4d590e71314bfd0251a4a3cf849
+  version: 4c164950cd0a8d3724ddb78982e2c56dc7f47112
 - name: github.com/satori/go.uuid
-  version: 879c5887cd475cd7864858769793b2ceb0d44feb
+  version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
 - name: golang.org/x/crypto
-  version: 1f22c0103821b9390939b6776727195525381532
+  version: d172538b2cfce0c13cee31e647d0367aa8cd2486
   subpackages:
   - pbkdf2
   - scrypt
