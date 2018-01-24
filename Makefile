@@ -22,3 +22,9 @@ bootstrap:
 .PHONY: test
 test:
 	go test .
+
+.PHONY: build-release
+build-release:
+	GOOS=linux GOARCH=amd64 go build -o ./bin/zolver-linux-amd64 -ldflags "-X main.version=${VERSION}" server.go
+	GOOS=windows GOARCH=amd64 go build -o ./bin/zolver-windows-amd64 -ldflags "-X main.version=${VERSION}" server.go
+	GOOS=darwin  GOARCH=amd64 go build -o ./bin/zolver-darwon-amd64 -ldflags "-X main.version=${VERSION}" server.go
