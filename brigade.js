@@ -1,4 +1,4 @@
-const { events, Job, Group } = require("brigadier");
+const { events, Job } = require("brigadier");
 
 events.on("check_suite:requested", runSuite);
 events.on("check_suite:rerequested", runSuite);
@@ -187,3 +187,7 @@ class GoJob extends Job {
         ];
     }
 }
+
+events.on("exec", (e, p) => {
+    console.log("Exec event executed.");
+});

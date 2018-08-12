@@ -65,7 +65,7 @@ func ParseYaml(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrup
 	// Read YAML file
 	data, err := ioutil.ReadFile(f)
 	if err != nil {
-		return zconf, fmt.Errorf("Failed to open zolver.yaml: %s\n", err)
+		return zconf, fmt.Errorf("failed to open zolver.yaml: %s\n", err)
 	}
 
 	if err := yaml.Unmarshal(data, zconf); err != nil {
