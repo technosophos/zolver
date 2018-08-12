@@ -17,11 +17,37 @@ clean:
 
 .PHONY: bootstrap
 bootstrap:
-	glide install
+	# glide install
+	go get -u gopkg.in/alecthomas/gometalinter.v1
+	# These are failing due to upstream errors.
+	#gometalinter.v1 --install
+	#dep ensure
 
 .PHONY: test
 test:
 	go test .
+
+.PHONY: style
+style:
+	gometalinter.v1 \
+		--disable-all \
+		--enable deadcode \
+		--severity deadcode:error \
+		--enable gofmt \
+		--enable ineffassign \
+		--enable misspell \
+		--enable vet \
+		--tests \
+		--vendor \
+  		--deadline 60s \
+  		./... || exit_code=1
+	gometalinter.v1 \
+		--disable-all \
+		--enable golint \
+		--vendor \
+		--skip proto \
+		--deadline 60s \
+		./... || :
 
 .PHONY: build-release
 build-release:
