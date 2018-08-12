@@ -43,6 +43,7 @@ function runUnitTests(e, p) {
     note.conclusion = "";
     note.title = "Run Tests"
     note.summary = "Running the test target for " + e.revision.commit;
+    note.text = "This test will execute all of the unit tests for the program."
 
     var job = new GoJob("run-tests", e, p);
     job.tasks.push(command);
@@ -87,6 +88,7 @@ async function runStyleTests(e, p) {
     note.conclusion = "";
     note.title = "Run Style Tests"
     note.summary = "Running the style test target for " + e.revision.commit;
+    note.text = "This test checks for formatting, dead code, and other frequent problems."
     var job = new GoJob("run-style", e, p);
     Array.prototype.push.apply(job.tasks, commands);
 
@@ -99,8 +101,9 @@ function runCoverage(e, p) {
     note.conclusion = "";
     note.title = "Run Coverage Check"
     note.summary = "Running the test coverage report for " + e.revision.commit;
+    note.text = "This test checks to see how much of the code has test coverage."
     var job = new GoJob("run-coverage", e, p);
-    
+    job.tasks.push("go test -cover .");
 
     return notificationWrap(job, note, "neutral");
 }
@@ -117,7 +120,8 @@ async function notificationWrap(job, note, conclusion) {
 
         note.conclusion = conclusion;
         note.summary = `Task "${ job.name }" passed`;
-        note.text = note.text = "```" + logs + "```\nSuccess: " + res.toString();
+        note.text = note.text = "```" + res.toString() + "```\nTest Complete";
+        return await note.run();
     } catch (e) {
         const logs = await job.logs();
         note.conclusion = "failure";
@@ -141,6 +145,9 @@ class Notification {
         this.name = name;
         this.externalID = e.buildID;
         this.detailsURL = `https://azure.github.com/kashti/builds/${ e.buildID }`;
+        this.title = "running check";
+        this.text = "";
+        this.summary = "";
 
         // count allows us to send the notification multiple times, with a distinct pod name
         // each time.
@@ -148,17 +155,12 @@ class Notification {
 
         // One of: "success", "failure", "neutral", "cancelled", or "timed_out".
         this.conclusion = "neutral";
-        this.title = "running check";
-        this.text = "";
-        this.summary = ""
     }
 
     // Send a new notification, and return a Promise<result>.
     run() {
         this.count++
-        console.log("create new job")
         var j = new Job(`${ this.name }-${ this.count }`, "technosophos/brigade-github-check-run:latest");
-        console.log("set environment vars")
         j.env = {
             CHECK_CONCLUSION: this.conclusion,
             CHECK_NAME: this.name,
@@ -169,7 +171,6 @@ class Notification {
             CHECK_DETAILS_URL: this.detailsURL,
             CHECK_EXTERNAL_ID: this.externalID
         }
-        console.log("run job")
         return j.run();
     }
 }
@@ -187,7 +188,6 @@ class GoJob extends Job {
             "curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh",
             "mkdir -p " + localPath,
             "mv /src/* " + localPath,
-            "ls -l " + localPath,
             "cd " + localPath,
             "dep ensure",
         ];
