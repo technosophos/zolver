@@ -63,25 +63,19 @@ async function runStyleTests(e, p) {
         "go get -u github.com/mibk/dupl",
         "go get honnef.co/go/tools/cmd/staticcheck",
         "go get github.com/walle/lll/...",
-    
-        `
-        set +e
-        for pkg in $(go list ./... | grep -v /vendor/); 
-          do
-            echo "==> $pkg";
-    
-            go vet "$pkg";
-            gotype $GOPATH/src/"$pkg";
-            gocyclo -over 10 $GOPATH/src/"$pkg";
-            gosimple "$pkg";
-            ineffassign $GOPATH/src/"$pkg";
-            unused "$pkg";
-            errcheck "$pkg";
-            dupl $GOPATH/src/"$pkg";
-            staticcheck "$pkg";
-            lll --maxlength 120  $GOPATH/src/"$pkg";
-          done
-          exit 0`
+        "set +e",
+        "export pkg=$(go list .)",
+        `go vet "$pkg";
+        gotype $GOPATH/src/"$pkg";
+        gocyclo -over 10 $GOPATH/src/"$pkg";
+        gosimple "$pkg";
+        ineffassign $GOPATH/src/"$pkg";
+        unused "$pkg";
+        errcheck "$pkg";
+        dupl $GOPATH/src/"$pkg";
+        staticcheck "$pkg";
+        lll --maxlength 120  $GOPATH/src/"$pkg";
+        exit 0`
     ];
     
     var note = new Notification("style", e, p);
