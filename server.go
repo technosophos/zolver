@@ -75,7 +75,7 @@ func ParseYaml(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrup
 	//fmt.Printf("Zolver: %v\n", zconf)
 	domains := make([]string, len(zconf))
 	i := 0
-	for d, _ := range zconf {
+	for d, oops := range zconf {
 		domains[i] = d
 		i++
 	}
