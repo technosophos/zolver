@@ -38,15 +38,19 @@ function runDCO(e, p) {
 
 // Run tests and fail if the tests do not pass.
 function runUnitTests(e, p) {
-    const command = "make test";
+
+    // Create notification object (which is just a Job)
     var note = new Notification("tests", e, p);
     note.conclusion = "";
     note.title = "Run Tests"
     note.summary = "Running the test target for " + e.revision.commit;
     note.text = "This test will execute all of the unit tests for the program."
 
+    // Create Go job to run the test
     var job = new GoJob("run-tests", e, p);
-    job.tasks.push(command);
+    job.tasks.push("make test");
+
+    // Send notification, then run, then send pass/fail notification
     return notificationWrap(job, note)
 }
 
