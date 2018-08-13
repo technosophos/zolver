@@ -65,11 +65,11 @@ func ParseYaml(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrup
 	// Read YAML file
 	data, err := ioutil.ReadFile(f)
 	if err != nil {
-		return zconf, fmt.Errorf("failed to open zolver.yaml: %s\n", err)
+		return zconf, fmt.Errorf("failed to open zolver.yaml: %s", err)
 	}
 
 	if err := yaml.Unmarshal(data, zconf); err != nil {
-		return zconf, fmt.Errorf("Invalid YAML: %s\n", err)
+		return zconf, fmt.Errorf("invalid YAML: %s", err)
 	}
 
 	//fmt.Printf("Zolver: %v\n", zconf)
@@ -84,7 +84,7 @@ func ParseYaml(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrup
 	return zconf, nil
 }
 
-// BuildTemplate resolves a route into a template.
+// BuildTemplates resolves a route into a template.
 func BuildTemplates(c cookoo.Context, p *cookoo.Params) (interface{}, cookoo.Interrupt) {
 	domains := p.Get("config", nil).(ZolverYaml)
 
